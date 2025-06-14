@@ -42,8 +42,8 @@
 <body>
   <h1>🩸 Blood Donor Form</h1>
   <form id="donorForm">
-    <input type="text" id="name" placeholder="Enter your name" required />
-    <input type="text" id="location" placeholder="Enter your location" required />
+    <input type="text" id="col3" placeholder="Enter Column 3 value" required />
+    <input type="text" id="col5" placeholder="Enter Column 5 value" required />
     <button type="submit">Submit</button>
     <div id="status"></div>
   </form>
@@ -54,17 +54,17 @@
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const name = document.getElementById("name").value.trim();
-      const location = document.getElementById("location").value.trim();
+      const col3 = document.getElementById("col3").value.trim();
+      const col5 = document.getElementById("col5").value.trim();
 
-      if (!name || !location) {
+      if (!col3 || !col5) {
         statusDiv.textContent = "❌ Please fill all fields.";
         statusDiv.style.color = "red";
         return;
       }
 
-      const endpoint = "https://script.google.com/macros/s/AKfycbxkHR7DiwIP_sOtDs46t7cbpnrQgdoOWgvUc5Q7WIoq6I-eMdBS7lwAFbB1Fjh4nfYEJg/exec";
-      const url = `${endpoint}?Name=${encodeURIComponent(name)}&Location=${encodeURIComponent(location)}`;
+      const endpoint = "https://script.google.com/macros/s/AKfycbxoYozGk4h5rGQVZ54ALpcIu_3vUVqY9i1scrH8Sp8KY5qDnxwkc5PXMCWDsvZVuwLe/exec";
+      const url = `${endpoint}?Column3=${encodeURIComponent(col3)}&Column5=${encodeURIComponent(col5)}`;
 
       try {
         const response = await fetch(url);
