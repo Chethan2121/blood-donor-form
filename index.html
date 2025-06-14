@@ -1,109 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blood Donor Submission</title>
+  <meta charset="UTF-8">
+  <title>Blood Donor Form</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
-    }
-
-    h2 {
+      background: #f8f8f8;
+      padding: 40px;
       text-align: center;
+    }
+    h1 {
       color: #d62828;
     }
-
     form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    label {
-      font-weight: bold;
-    }
-
     input, button {
       padding: 10px;
-      font-size: 1em;
+      margin: 10px;
+      width: 90%;
+      font-size: 16px;
     }
-
     button {
       background-color: #d62828;
       color: white;
       border: none;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #b71c1c;
-    }
-
-    .success {
-      color: green;
-      text-align: center;
-    }
-
-    .error {
-      color: red;
-      text-align: center;
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
-  <h2>🩸 Submit Donor Info</h2>
-
+  <h1>🩸 Blood Donor Form</h1>
   <form id="donorForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="Name" required>
-
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="Location" required>
-
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="text" id="location" placeholder="Enter your location" required />
     <button type="submit">Submit</button>
+    <div id="status"></div>
   </form>
 
-  <p id="responseMessage"></p>
-
   <script>
-    const form = document.getElementById('donorForm');
-    const message = document.getElementById('responseMessage');
+    const form = document.getElementById("donorForm");
+    const statusDiv = document.getElementById("status");
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
-
-      const name = document.getElementById('name').value.trim();
-      const location = document.getElementById('location').value.trim();
+      const name = document.getElementById("name").value.trim();
+      const location = document.getElementById("location").value.trim();
 
       if (!name || !location) {
-        message.textContent = 'Please fill all fields.';
-        message.className = 'error';
+        statusDiv.textContent = "❌ Please fill all fields.";
+        statusDiv.style.color = "red";
         return;
       }
 
-      const url = `https://script.google.com/macros/s/AKfycbxkHR7DiwIP_sOtDs46t7cbpnrQgdoOWgvUc5Q7WIoq6I-eMdBS7lwAFbB1Fjh4nfYEJg/exec?Name=${encodeURIComponent(name)}&Location=${encodeURIComponent(location)}`;
+      const endpoint = "https://script.google.com/macros/s/AKfycbxkHR7DiwIP_sOtDs46t7cbpnrQgdoOWgvUc5Q7WIoq6I-eMdBS7lwAFbB1Fjh4nfYEJg/exec";
+      const url = `${endpoint}?Name=${encodeURIComponent(name)}&Location=${encodeURIComponent(location)}`;
 
       try {
-        const res = await fetch(url);
-        if (res.ok) {
-          message.textContent = "✅ Submission successful!";
-          message.className = "success";
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (result.success) {
+          statusDiv.textContent = "✅ Submission successful!";
+          statusDiv.style.color = "green";
           form.reset();
         } else {
-          throw new Error("Submission failed");
+          statusDiv.textContent = "❌ Submission failed. " + (result.error || "");
+          statusDiv.style.color = "red";
         }
       } catch (error) {
-        message.textContent = "❌ Submission failed. Try again.";
-        message.className = "error";
+        statusDiv.textContent = "❌ Submission failed. Try again.";
+        statusDiv.style.color = "red";
+        console.error("Error:", error);
       }
     });
   </script>
-
 </body>
 </html>
