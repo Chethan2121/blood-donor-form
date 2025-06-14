@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blood Donor Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d62828;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #d62828;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #b71c1c;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🩸 Submit Donor Info</h2>
+
+  <form id="donorForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="Name" required>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="Location" required>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="responseMessage"></p>
+
+  <script>
+    const form = document.getElementById('donorForm');
+    const message = document.getElementById('responseMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const location = document.getElementById('location').value.trim();
+
+      if (!name || !location) {
+        message.textContent = 'Please fill all fields.';
+        message.className = 'error';
+        return;
+      }
+
+      const url = `https://script.google.com/macros/s/AKfycbw9kn1NrDDvyErvMALE7AoOz6i32aR2i_v9bjIXRdTH8YzSAMb4zJeL7PMl2S6zx5IXig/exec?Name=${encodeURIComponent(name)}&Location=${encodeURIComponent(location)}`;
+
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          message.textContent = "✅ Submission successful!";
+          message.className = "success";
+          form.reset();
+        } else {
+          throw new Error("Submission failed");
+        }
+      } catch (error) {
+        message.textContent = "❌ Submission failed. Try again.";
+        message.className = "error";
+      }
+    });
+  </script>
+
+</body>
+</html>
